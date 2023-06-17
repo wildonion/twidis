@@ -29,7 +29,7 @@ client = tweepy.Client(
 )
 
 @app.get("/get-user-tweets/{username}")
-def get_latest_tweets(username: str, count: int = 100):
+def get_latest_tweets(username: str, count: int = 3000):
     try:
         account = client.get_user(username=username).data.id
         tweets = client.get_users_tweets(account, max_results=count, exclude='replies').data
@@ -47,16 +47,16 @@ def get_latest_tweets(username: str, count: int = 100):
     
     
 @app.get("/get-user-mentions/{username}")
-def get_latest_tweets(username: str, count: int = 100):
+def get_latest_tweets(username: str, count: int = 3000):
     try:
         account = client.get_user(username=username).data.id
         mentions = client.get_users_mentions(account, max_results=count, expansions=['author_id']).data
         latest_mentions = []
         for mention in mentions:
-            latest_mentions.append({"author_id": mention.author_id, "text": mention.text, "created_at": mention.created_at})
+            latest_mentions.append({"text": mention.text, "created_at": mention.created_at})
         now = datetime.now()
         print("request handled in [get-user-mentions] route at time ", now.strftime("%Y,%M%D - %H:%M:%S"))
-        
+            
         red.publish('user_mentions', json.dumps(latest_mentions))
         
         return {"username": username, "mentions": latest_mentions}
@@ -65,7 +65,7 @@ def get_latest_tweets(username: str, count: int = 100):
     
     
 @app.get("/get-user-replies/{username}")
-def get_latest_replies(username: str, count: int = 100):
+def get_latest_replies(username: str, count: int = 3000):
     try:
         account = client.get_user(username=username).data.id
         tweets = client.get_users_tweets(account, max_results=count).data
