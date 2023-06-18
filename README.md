@@ -1,6 +1,6 @@
 
 
-get last 100 tweets, mentions and replies of a specific user
+get 3000 tweets, mentions and replies of a specific user
 
 > all user's mentions will be published to the `user_mentions` channel using redis pubsub.
 
